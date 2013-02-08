@@ -1,0 +1,18 @@
+{
+  "name": "secret_santa",
+  "version": "0.0.0",
+  "description": "ERROR: No README.md file found!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD",
+  "devDependencies": {
+    "grunt": "~0.3.17",
+    "grunt-coffee": "0.0.6",
+    "grunt-clientside": "~0.2.0",
+    "grunt-jade": "~0.3.9"
+  }
+}
