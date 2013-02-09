@@ -76,11 +76,14 @@ return module.exports || exports;
 
 //app.js
 __cs.libs.cs11869e27 = (function(require, module, exports) {
-var Participant, ryan;
+var Participant, match, ryan;
 Participant = require('./participant');
 ryan = new Participant({
   name: 'Ryan'
 });
+match = function() {
+  return "hello";
+};
 console.log(ryan);
 return module.exports || exports;
 })(__cs.r, {}, {});
