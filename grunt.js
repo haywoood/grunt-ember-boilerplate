@@ -68,7 +68,7 @@ module.exports = function(grunt) {
     },
     concat: {
       dist: {
-        src: ['vendor/zepto.js', 'vendor/underscore.js', 'vendor/backbone.js', 'vendor/handlebars.runtime.js', 'vendor/swag.js', 'build/javascripts/templates.js', 'build/javascripts/app.js'],
+        src: ['vendor/zepto.js', 'vendor/underscore.js', 'vendor/handlebars.runtime.js', 'vendor/ember.js', 'vendor/swag.js', 'build/javascripts/templates.js', 'build/javascripts/app.js'],
         dest: 'build/javascripts/app.js'
       }
     },
