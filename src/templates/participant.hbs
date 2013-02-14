@@ -1,7 +1,15 @@
 <div style="margin-top: 50px;margin-left: 50px;">
-  <strong>W E L C O M E</strong>
+
+  <strong>P A R T I C I P A N T S .</strong>
+
   <br />
   <br />
   <br />
-  <em>participant: {{lowercase participant.name}}</em>
+
+  {{#each participants}}
+    <em>{{lowercase name}}</em> <br />
+  {{/each}}
+
+  {{> _footer}}
+
 </div>

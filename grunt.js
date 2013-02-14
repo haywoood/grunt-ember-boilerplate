@@ -31,14 +31,15 @@ module.exports = function(grunt) {
     handlebars: {
       compile: {
         options: {
+          namespace: 'tpl',
           wrapped: true,
           processPartialName: function(filePath) { // input:  templates/_header.hbs
             var pieces = filePath.split("/");
-            return pieces[pieces.length - 1]; // output: _header.hbs
+            return pieces[pieces.length - 1].slice(0, -4); // output: _header.hbs
           },
           processName: function(filePath) { // input:  templates/_header.hbs
             var pieces = filePath.split("/");
-            return pieces[pieces.length - 1]; // output: _header.hbs
+            return pieces[pieces.length - 1].slice(0, -4); // output: _header.hbs
           }
         },
         files: {
