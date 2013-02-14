@@ -2,7 +2,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     watch: {
       scripts: {
-        files: ['src/coffee/**/*.coffee', 'specs/**/**.coffee'],
+        files: ['src/coffee/**/*.coffee', 'specs/**/**.coffee', 'src/templates/**/*.hbs'],
         tasks: 'default'
       },
       jade: {
@@ -28,6 +28,24 @@ module.exports = function(grunt) {
         }
       }
     },
+    handlebars: {
+      compile: {
+        options: {
+          wrapped: true,
+          processPartialName: function(filePath) { // input:  templates/_header.hbs
+            var pieces = filePath.split("/");
+            return pieces[pieces.length - 1]; // output: _header.hbs
+          },
+          processName: function(filePath) { // input:  templates/_header.hbs
+            var pieces = filePath.split("/");
+            return pieces[pieces.length - 1]; // output: _header.hbs
+          }
+        },
+        files: {
+          "build/javascripts/templates.js": ["src/templates/**/*.hbs"]
+        }
+      }
+    },
     clientside: {
       main: {
         main: 'build/javascripts/app.js',
@@ -44,9 +62,12 @@ module.exports = function(grunt) {
         }
       }
     },
+    clean: {
+      folder: ['build/javascripts', 'specs/compiled'],
+    },
     concat: {
       dist: {
-        src: ['vendor/zepto.js', 'vendor/underscore.js', 'vendor/backbone.js', 'build/javascripts/app.js'],
+        src: ['vendor/zepto.js', 'vendor/underscore.js', 'vendor/backbone.js', 'vendor/handlebars.runtime.js', 'vendor/swag.js', 'build/javascripts/templates.js', 'build/javascripts/app.js'],
         dest: 'build/javascripts/app.js'
       }
     },
@@ -74,7 +95,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-clientside')
   grunt.loadNpmTasks('grunt-contrib-stylus')
   grunt.loadNpmTasks('grunt-jasmine-runner')
+  grunt.loadNpmTasks('grunt-clean')
+  grunt.loadNpmTasks('grunt-contrib-handlebars')
 
-  grunt.registerTask('default', 'coffee:app clientside concat coffee:test jasmine')
+  grunt.registerTask('default', 'clean coffee:app handlebars clientside concat coffee:test jasmine')
 
 }

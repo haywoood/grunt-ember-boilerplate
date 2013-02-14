@@ -1,9 +1,7 @@
 Participant = require('./participant')
 
-ryan = new Participant
-  name: 'Ryan'
+participant = new Participant
+  name: 'LSDAFJKLSD'
 
-match = ->
-  return "hello"
-
-console.log ryan
+$ ->
+  $('.app').html JST['participant.hbs']({participant: participant})

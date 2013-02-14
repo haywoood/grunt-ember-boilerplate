@@ -44,6 +44,295 @@ e.data=JSON.stringify(c.attrs||b.toJSON(c));c.emulateJSON&&(e.contentType="appli
 var j=c.error;c.error=function(a){j&&j(b,a,c);b.trigger("error",b,a,c)};a=c.xhr=g.ajax(f.extend(e,c));b.trigger("request",b,a,c);return a};g.ajax=function(){return g.$.ajax.apply(g.$,arguments)};r.extend=s.extend=y.extend=A.extend=m.extend=function(a,b){var c=this,d;d=a&&f.has(a,"constructor")?a.constructor:function(){return c.apply(this,arguments)};f.extend(d,c,b);var e=function(){this.constructor=d};e.prototype=c.prototype;d.prototype=new e;a&&f.extend(d.prototype,a);d.__super__=c.prototype;return d};
 var x=function(){throw Error('A "url" property or function must be specified');}}).call(this);
 
+// lib/handlebars/base.js
+
+/*jshint eqnull:true*/
+this.Handlebars = {};
+
+(function(Handlebars) {
+
+Handlebars.VERSION = "1.0.rc.2";
+
+Handlebars.helpers  = {};
+Handlebars.partials = {};
+
+Handlebars.registerHelper = function(name, fn, inverse) {
+  if(inverse) { fn.not = inverse; }
+  this.helpers[name] = fn;
+};
+
+Handlebars.registerPartial = function(name, str) {
+  this.partials[name] = str;
+};
+
+Handlebars.registerHelper('helperMissing', function(arg) {
+  if(arguments.length === 2) {
+    return undefined;
+  } else {
+    throw new Error("Could not find property '" + arg + "'");
+  }
+});
+
+var toString = Object.prototype.toString, functionType = "[object Function]";
+
+Handlebars.registerHelper('blockHelperMissing', function(context, options) {
+  var inverse = options.inverse || function() {}, fn = options.fn;
+
+
+  var ret = "";
+  var type = toString.call(context);
+
+  if(type === functionType) { context = context.call(this); }
+
+  if(context === true) {
+    return fn(this);
+  } else if(context === false || context == null) {
+    return inverse(this);
+  } else if(type === "[object Array]") {
+    if(context.length > 0) {
+      return Handlebars.helpers.each(context, options);
+    } else {
+      return inverse(this);
+    }
+  } else {
+    return fn(context);
+  }
+});
+
+Handlebars.K = function() {};
+
+Handlebars.createFrame = Object.create || function(object) {
+  Handlebars.K.prototype = object;
+  var obj = new Handlebars.K();
+  Handlebars.K.prototype = null;
+  return obj;
+};
+
+Handlebars.logger = {
+  DEBUG: 0, INFO: 1, WARN: 2, ERROR: 3, level: 3,
+
+  methodMap: {0: 'debug', 1: 'info', 2: 'warn', 3: 'error'},
+
+  // can be overridden in the host environment
+  log: function(level, obj) {
+    if (Handlebars.logger.level <= level) {
+      var method = Handlebars.logger.methodMap[level];
+      if (typeof console !== 'undefined' && console[method]) {
+        console[method].call(console, obj);
+      }
+    }
+  }
+};
+
+Handlebars.log = function(level, obj) { Handlebars.logger.log(level, obj); };
+
+Handlebars.registerHelper('each', function(context, options) {
+  var fn = options.fn, inverse = options.inverse;
+  var i = 0, ret = "", data;
+
+  if (options.data) {
+    data = Handlebars.createFrame(options.data);
+  }
+
+  if(context && typeof context === 'object') {
+    if(context instanceof Array){
+      for(var j = context.length; i<j; i++) {
+        if (data) { data.index = i; }
+        ret = ret + fn(context[i], { data: data });
+      }
+    } else {
+      for(var key in context) {
+        if(context.hasOwnProperty(key)) {
+          if(data) { data.key = key; }
+          ret = ret + fn(context[key], {data: data});
+          i++;
+        }
+      }
+    }
+  }
+
+  if(i === 0){
+    ret = inverse(this);
+  }
+
+  return ret;
+});
+
+Handlebars.registerHelper('if', function(context, options) {
+  var type = toString.call(context);
+  if(type === functionType) { context = context.call(this); }
+
+  if(!context || Handlebars.Utils.isEmpty(context)) {
+    return options.inverse(this);
+  } else {
+    return options.fn(this);
+  }
+});
+
+Handlebars.registerHelper('unless', function(context, options) {
+  var fn = options.fn, inverse = options.inverse;
+  options.fn = inverse;
+  options.inverse = fn;
+
+  return Handlebars.helpers['if'].call(this, context, options);
+});
+
+Handlebars.registerHelper('with', function(context, options) {
+  return options.fn(context);
+});
+
+Handlebars.registerHelper('log', function(context, options) {
+  var level = options.data && options.data.level != null ? parseInt(options.data.level, 10) : 1;
+  Handlebars.log(level, context);
+});
+
+}(this.Handlebars));
+;
+// lib/handlebars/utils.js
+
+var errorProps = ['description', 'fileName', 'lineNumber', 'message', 'name', 'number', 'stack'];
+
+Handlebars.Exception = function(message) {
+  var tmp = Error.prototype.constructor.apply(this, arguments);
+
+  // Unfortunately errors are not enumerable in Chrome (at least), so `for prop in tmp` doesn't work.
+  for (var idx = 0; idx < errorProps.length; idx++) {
+    this[errorProps[idx]] = tmp[errorProps[idx]];
+  }
+};
+Handlebars.Exception.prototype = new Error();
+
+// Build out our basic SafeString type
+Handlebars.SafeString = function(string) {
+  this.string = string;
+};
+Handlebars.SafeString.prototype.toString = function() {
+  return this.string.toString();
+};
+
+(function() {
+  var escape = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#x27;",
+    "`": "&#x60;"
+  };
+
+  var badChars = /[&<>"'`]/g;
+  var possible = /[&<>"'`]/;
+
+  var escapeChar = function(chr) {
+    return escape[chr] || "&amp;";
+  };
+
+  Handlebars.Utils = {
+    escapeExpression: function(string) {
+      // don't escape SafeStrings, since they're already safe
+      if (string instanceof Handlebars.SafeString) {
+        return string.toString();
+      } else if (string == null || string === false) {
+        return "";
+      }
+
+      if(!possible.test(string)) { return string; }
+      return string.replace(badChars, escapeChar);
+    },
+
+    isEmpty: function(value) {
+      if (!value && value !== 0) {
+        return true;
+      } else if(Object.prototype.toString.call(value) === "[object Array]" && value.length === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+})();;
+// lib/handlebars/runtime.js
+Handlebars.VM = {
+  template: function(templateSpec) {
+    // Just add water
+    var container = {
+      escapeExpression: Handlebars.Utils.escapeExpression,
+      invokePartial: Handlebars.VM.invokePartial,
+      programs: [],
+      program: function(i, fn, data) {
+        var programWrapper = this.programs[i];
+        if(data) {
+          return Handlebars.VM.program(fn, data);
+        } else if(programWrapper) {
+          return programWrapper;
+        } else {
+          programWrapper = this.programs[i] = Handlebars.VM.program(fn);
+          return programWrapper;
+        }
+      },
+      programWithDepth: Handlebars.VM.programWithDepth,
+      noop: Handlebars.VM.noop
+    };
+
+    return function(context, options) {
+      options = options || {};
+      return templateSpec.call(container, Handlebars, context, options.helpers, options.partials, options.data);
+    };
+  },
+
+  programWithDepth: function(fn, data, $depth) {
+    var args = Array.prototype.slice.call(arguments, 2);
+
+    return function(context, options) {
+      options = options || {};
+
+      return fn.apply(this, [context, options.data || data].concat(args));
+    };
+  },
+  program: function(fn, data) {
+    return function(context, options) {
+      options = options || {};
+
+      return fn(context, options.data || data);
+    };
+  },
+  noop: function() { return ""; },
+  invokePartial: function(partial, name, context, helpers, partials, data) {
+    var options = { helpers: helpers, partials: partials, data: data };
+
+    if(partial === undefined) {
+      throw new Handlebars.Exception("The partial " + name + " could not be found");
+    } else if(partial instanceof Function) {
+      return partial(context, options);
+    } else if (!Handlebars.compile) {
+      throw new Handlebars.Exception("The partial " + name + " could not be compiled when running in runtime-only mode");
+    } else {
+      partials[name] = Handlebars.compile(partial, {data: data !== undefined});
+      return partials[name](context, options);
+    }
+  }
+};
+
+Handlebars.template = Handlebars.VM.template;
+;
+
+(function(){var e,r,t,n,i,u=[].indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(r in this&&this[r]===e)return r;return-1};"undefined"!=typeof window&&null!==window&&(t=window.Handlebars,window.Swag=n={}),"undefined"!=typeof module&&null!==module&&(t=require("handlebars"),module.exports=n={}),n.Config={partialsPath:""},i={},i.toString=Object.prototype.toString,i.isUndefined=function(e){return"undefined"===e||"[object Function]"===i.toString.call(e)||null!=e.hash},i.safeString=function(e){return new t.SafeString(e)},i.trim=function(e){var r;return r=/\S/.test(" ")?/^[\s\xA0]+|[\s\xA0]+$/g:/^\s+|\s+$/g,(""+e).replace(r,"")},t.registerHelper("lowercase",function(e){return e.toLowerCase()}),t.registerHelper("uppercase",function(e){return e.toUpperCase()}),t.registerHelper("capitalizeFirst",function(e){return e.charAt(0).toUpperCase()+e.slice(1)}),t.registerHelper("capitalizeEach",function(e){return e.replace(/\w\S*/g,function(e){return e.charAt(0).toUpperCase()+e.substr(1)})}),t.registerHelper("titleize",function(e){var r,t,n,i;return t=e.replace(/[ \-_]+/g," "),i=t.match(/\w+/g),r=function(e){return e.charAt(0).toUpperCase()+e.slice(1)},function(){var e,t,u;for(u=[],e=0,t=i.length;t>e;e++)n=i[e],u.push(r(n));return u}().join(" ")}),t.registerHelper("sentence",function(e){return e.replace(/((?:\S[^\.\?\!]*)[\.\?\!]*)/g,function(e){return e.charAt(0).toUpperCase()+e.substr(1).toLowerCase()})}),t.registerHelper("reverse",function(e){return e.split("").reverse().join("")}),t.registerHelper("truncate",function(e,r,t){return i.isUndefined(t)&&(t=""),e.length>r?e.substring(0,r-t.length)+t:e}),t.registerHelper("center",function(e,r){var t,n;for(n="",t=0;r>t;)n+="&nbsp;",t++;return""+n+e+n}),t.registerHelper("newLineToBr",function(e){return e.replace(/\r?\n|\r/g,"<br>")}),t.registerHelper("first",function(e,r){return i.isUndefined(r)?e[0]:e.slice(0,r)}),t.registerHelper("withFirst",function(e,r,t){var n,u;if(i.isUndefined(r))return t=r,t.fn(e[0]);e=e.slice(0,r),u="";for(n in e)u+=t.fn(e[n]);return u}),t.registerHelper("last",function(e,r){return i.isUndefined(r)?e[e.length-1]:e.slice(-r)}),t.registerHelper("withLast",function(e,r,t){var n,u;if(i.isUndefined(r))return t=r,t.fn(e[e.length-1]);e=e.slice(-r),u="";for(n in e)u+=t.fn(e[n]);return u}),t.registerHelper("after",function(e,r){return e.slice(r)}),t.registerHelper("withAfter",function(e,r,t){var n,i;e=e.slice(r),i="";for(n in e)i+=t.fn(e[n]);return i}),t.registerHelper("before",function(e,r){return e.slice(0,-r)}),t.registerHelper("withBefore",function(e,r,t){var n,i;e=e.slice(0,-r),i="";for(n in e)i+=t.fn(e[n]);return i}),t.registerHelper("join",function(e,r){return e.join(i.isUndefined(r)?" ":r)}),t.registerHelper("sort",function(e,r){return i.isUndefined(r)?e.sort():e.sort(function(e,t){return e[r]>t[r]})}),t.registerHelper("withSort",function(e,r,t){var n,u,s,a;if(u="",i.isUndefined(r))for(t=r,e=e.sort(),s=0,a=e.length;a>s;s++)n=e[s],u+=t.fn(n);else{e=e.sort(function(e,t){return e[r]>t[r]});for(n in e)u+=t.fn(e[n])}return u}),t.registerHelper("length",function(e){return e.length}),t.registerHelper("lengthEqual",function(e,r,t){return e.length===r?t.fn(this):t.inverse(this)}),t.registerHelper("empty",function(e,r){return 0>=e.length?r.fn(this):r.inverse(this)}),t.registerHelper("any",function(e,r){return e.length>0?r.fn(this):r.inverse(this)}),t.registerHelper("inArray",function(e,r,t){return-1!==e.indexOf(r)?t.fn(this):t.inverse(this)}),t.registerHelper("eachIndex",function(e,r){var n,i,u,s;if(s="",null!=r.data&&(n=t.createFrame(r.data)),e&&e.length>0)for(i=0,u=e.length;u>i;)n&&(n.index=i),e[i].index=i,s+=r.fn(e[i]),i++;else s=r.inverse(this);return s}),t.registerHelper("add",function(e,r){return e+r}),t.registerHelper("subtract",function(e,r){return e-r}),t.registerHelper("divide",function(e,r){return e/r}),t.registerHelper("multiply",function(e,r){return e*r}),t.registerHelper("floor",function(e){return Math.floor(e)}),t.registerHelper("ceil",function(e){return Math.ceil(e)}),t.registerHelper("round",function(e){return Math.round(e)}),t.registerHelper("toFixed",function(e,r){return i.isUndefined(r)&&(r=0),e.toFixed(r)}),t.registerHelper("toPrecision",function(e,r){return i.isUndefined(r)&&(r=1),e.toPrecision(r)}),t.registerHelper("toExponential",function(e,r){return i.isUndefined(r)&&(r=0),e.toExponential(r)}),t.registerHelper("toInt",function(e){return parseInt(e,10)}),t.registerHelper("toFloat",function(e){return parseFloat(e)}),t.registerHelper("addCommas",function(e){return(""+e).replace(/(\d)(?=(\d\d\d)+(?!\d))/g,"$1,")}),t.registerHelper("is",function(e,r,t){return e===r?t.fn(this):t.inverse(this)}),t.registerHelper("isnt",function(e,r,t){return e!==r?t.fn(this):t.inverse(this)}),t.registerHelper("gt",function(e,r,t){return e>r?t.fn(this):t.inverse(this)}),t.registerHelper("gte",function(e,r,t){return e>=r?t.fn(this):t.inverse(this)}),t.registerHelper("lt",function(e,r,t){return r>e?t.fn(this):t.inverse(this)}),t.registerHelper("lte",function(e,r,t){return r>=e?t.fn(this):t.inverse(this)}),t.registerHelper("or",function(e,r,t){return e||r?t.fn(this):t.inverse(this)}),t.registerHelper("and",function(e,r,t){return e&&r?t.fn(this):t.inverse(this)}),e={},e.padNumber=function(e,r,t){var n,i;if(t===void 0&&(t="0"),n=r-(e+"").length,i="",n>0)for(;n--;)i+=t;return i+e},e.dayOfYear=function(e){var r;return r=new Date(e.getFullYear(),0,1),Math.ceil((e-r)/864e5)},e.weekOfYear=function(e){var r;return r=new Date(e.getFullYear(),0,1),Math.ceil(((e-r)/864e5+r.getDay()+1)/7)},e.isoWeekOfYear=function(e){var r,t,n,i;return i=new Date(e.valueOf()),t=(e.getDay()+6)%7,i.setDate(i.getDate()-t+3),n=new Date(i.getFullYear(),0,4),r=(i-n)/864e5,1+Math.ceil(r/7)},e.tweleveHour=function(e){return e.getHours()>12?e.getHours()-12:e.getHours()},e.timeZoneOffset=function(r){var t,n;return t=-r.getTimezoneOffset()/60,n=e.padNumber(Math.abs(t),4),(t>0?"+":"-")+n},e.format=function(r,t){return t.replace(e.formats,function(t,n){switch(n){case"a":return e.abbreviatedWeekdays[r.getDay()];case"A":return e.fullWeekdays[r.getDay()];case"b":return e.abbreviatedMonths[r.getMonth()];case"B":return e.fullMonths[r.getMonth()];case"c":return r.toLocaleString();case"C":return Math.round(r.getFullYear()/100);case"d":return e.padNumber(r.getDate(),2);case"D":return e.format(r,"%m/%d/%y");case"e":return e.padNumber(r.getDate(),2," ");case"F":return e.format(r,"%Y-%m-%d");case"h":return e.format(r,"%b");case"H":return e.padNumber(r.getHours(),2);case"I":return e.padNumber(e.tweleveHour(r),2);case"j":return e.padNumber(e.dayOfYear(r),3);case"k":return e.padNumber(r.getHours(),2," ");case"l":return e.padNumber(e.tweleveHour(r),2," ");case"L":return e.padNumber(r.getMilliseconds(),3);case"m":return e.padNumber(r.getMonth()+1,2);case"M":return e.padNumber(r.getMinutes(),2);case"n":return"\n";case"p":return r.getHours()>11?"PM":"AM";case"P":return e.format(r,"%p").toLowerCase();case"r":return e.format(r,"%I:%M:%S %p");case"R":return e.format(r,"%H:%M");case"s":return r.getTime()/1e3;case"S":return e.padNumber(r.getSeconds(),2);case"t":return"	";case"T":return e.format(r,"%H:%M:%S");case"u":return 0===r.getDay()?7:r.getDay();case"U":return e.padNumber(e.weekOfYear(r),2);case"v":return e.format(r,"%e-%b-%Y");case"V":return e.padNumber(e.isoWeekOfYear(r),2);case"W":return e.padNumber(e.weekOfYear(r),2);case"w":return e.padNumber(r.getDay(),2);case"x":return r.toLocaleDateString();case"X":return r.toLocaleTimeString();case"y":return(r.getFullYear()+"").substring(2);case"Y":return r.getFullYear();case"z":return e.timeZoneOffset(r);default:return match}})},e.formats=/%(a|A|b|B|c|C|d|D|e|F|h|H|I|j|k|l|L|m|M|n|p|P|r|R|s|S|t|T|u|U|v|V|W|w|x|X|y|Y|z)/g,e.abbreviatedWeekdays=["Sun","Mon","Tue","Wed","Thur","Fri","Sat"],e.fullWeekdays=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],e.abbreviatedMonths=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],e.fullMonths=["January","February","March","April","May","June","July","August","September","October","November","December"],t.registerHelper("formatDate",function(r,t){return r=new Date(r),e.format(r,t)}),t.registerHelper("now",function(r){var t;return t=new Date,i.isUndefined(r)?t:e.format(t,r)}),t.registerHelper("timeago",function(e){var r,t;return e=new Date(e),t=Math.floor((new Date-e)/1e3),r=Math.floor(t/31536e3),r>1?""+r+" years ago":(r=Math.floor(t/2592e3),r>1?""+r+" months ago":(r=Math.floor(t/86400),r>1?""+r+" days ago":(r=Math.floor(t/3600),r>1?""+r+" hours ago":(r=Math.floor(t/60),r>1?""+r+" minutes ago":0===Math.floor(t)?"Just now":Math.floor(t)+" seconds ago"))))}),t.registerHelper("inflect",function(e,r,t,n){var u;return u=e>1||0===e?t:r,i.isUndefined(n)||n===!1?u:""+e+" "+u}),t.registerHelper("ordinalize",function(e){var r,t;if(r=Math.abs(Math.round(e)),t=r%100,u.call([11,12,13],t)>=0)return""+e+"th";switch(r%10){case 1:return""+e+"st";case 2:return""+e+"nd";case 3:return""+e+"rd";default:return""+e+"th"}}),r={},r.parseAttributes=function(e){return Object.keys(e).map(function(r){return""+r+'="'+e[r]+'"'}).join(" ")},t.registerHelper("ul",function(e,t){return"<ul "+r.parseAttributes(t.hash)+">"+e.map(function(e){return"<li>"+t.fn(e)+"</li>"}).join("\n")+"</ul>"}),t.registerHelper("ol",function(e,t){return"<ol "+r.parseAttributes(t.hash)+">"+e.map(function(e){return"<li>"+t.fn(e)+"</li>"}).join("\n")+"</ol>"}),t.registerHelper("br",function(e){var r,t;if(r="<br>",!i.isUndefined(e))for(t=0;e-1>t;)r+="<br>",t++;return i.safeString(r)}),t.registerHelper("log",function(e){return console.log(e)}),t.registerHelper("debug",function(e){return console.log("Context: ",this),i.isUndefined(e)||console.log("Value: ",e),console.log("-----------------------------------------------")}),t.registerHelper("default",function(e,r){return null!=e?e:r}),t.registerHelper("partial",function(e,r){var u;return u=n.Config.partialsPath+e,r=i.isUndefined(r)?{}:r,null==t.partials[e]&&t.registerPartial(e,require(u)),i.safeString(t.partials[e](r))})}).call(this);
+
+this["JST"] = this["JST"] || {};
+
+this["JST"]["participant.hbs"] = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
+  helpers = helpers || Handlebars.helpers; data = data || {};
+  var buffer = "", stack1, stack2, foundHelper, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
+
+
+  buffer += "<div style=\"margin-top: 50px;margin-left: 50px;\">\n  <strong>W E L C O M E</strong>\n  <br />\n  <br />\n  <br />\n  <em>participant: ";
+  stack1 = depth0.participant;
+  stack1 = stack1 == null || stack1 === false ? stack1 : stack1.name;
+  stack2 = {};
+  foundHelper = helpers.lowercase;
+  stack1 = foundHelper ? foundHelper.call(depth0, stack1, {hash:stack2,data:data}) : helperMissing.call(depth0, "lowercase", stack1, {hash:stack2,data:data});
+  buffer += escapeExpression(stack1) + "</em>\n</div>\n";
+  return buffer;});
 //built with clientside 0.5.1 https://github.com/jgallen23/clientside
 if (typeof __cs == 'undefined') {
   var __cs = { 
@@ -59,10 +348,10 @@ if (typeof __cs == 'undefined') {
   };
   window.require = __cs.r;
 }
-__cs.map['./participant'] = 'cse85add99';
+__cs.map['./participant'] = 'cs42508be3';
 
 //participant.js
-__cs.libs.cse85add99 = (function(require, module, exports) {
+__cs.libs.cs42508be3 = (function(require, module, exports) {
 var Participant;
 Participant = (function() {
   function Participant(args) {
@@ -76,15 +365,16 @@ return module.exports || exports;
 
 //app.js
 __cs.libs.cs11869e27 = (function(require, module, exports) {
-var Participant, match, ryan;
+var Participant, participant;
 Participant = require('./participant');
-ryan = new Participant({
-  name: 'Ryan'
+participant = new Participant({
+  name: 'LSDAFJKLSD'
 });
-match = function() {
-  return "hello";
-};
-console.log(ryan);
+$(function() {
+  return $('.app').html(JST['participant.hbs']({
+    participant: participant
+  }));
+});
 return module.exports || exports;
 })(__cs.r, {}, {});
 
