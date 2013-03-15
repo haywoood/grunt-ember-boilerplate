@@ -1,2 +1,3 @@
-haha = require('./new')
 App = Ember.Application.create()
+
+module.exports = App

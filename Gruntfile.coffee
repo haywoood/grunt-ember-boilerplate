@@ -28,12 +28,11 @@ module.exports = (grunt) ->
       options:
         processName: (filename) ->
           pieces = filename.split '/'
-          name = pieces[pieces.length - 1]
-          name = name.replace '_', '/'
-          name = name.slice 0, -4
+          template = pieces.slice 3
+          template.join('/').slice 0, -11
       compile:
         files:
-          'js/templates.js': ['libs/**/*.hbs']
+          '.tmp/js/templates.js': ['libs/**/*.handlebars']
 
     concat:
       styles:
@@ -44,11 +43,11 @@ module.exports = (grunt) ->
         dest: 'css/application.css'
       scripts:
         src: [
-          'vendor/commonjs.js'
           'vendor/jquery.js'
+          'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.js'
-          'js/templates.js'
+          '.tmp/js/templates.js'
           '.tmp/**/*.js'
         ]
         dest: 'js/application.js'
@@ -56,7 +55,7 @@ module.exports = (grunt) ->
     watch:
       main:
         files: [
-          'lib/**/*'
+          'libs/**/*'
         ]
         tasks: ['default']
 
