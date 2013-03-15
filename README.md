@@ -15,6 +15,24 @@ You get:
 - Stylus for CSS
 - A precompilation directive for production deploy
 
+Why?
+====
+Literally so many projects that do this kind of stuff.  
+- Yeoman, uses Grunt.js, awesome! Lacks coffeescript and commonjs
+modules
+- Brunch.io does not use Grunt.js (Grunt.js is a really great task
+runner with a very vibrant community / contrib library)
+- Ember-tools, I love this project and use it within grunt on other
+projects... but it doesn't have coffeescript and it's not as flexible as
+a grunt project.
+
+This project is just boilerplate Grunt.js, modify the `Gruntfile.coffee` to
+do whatever you want, you have the entire Grunt.js ecosystem!! I've
+actually used this project in replacement of the Rails asset pipeline,
+so you can use the output files within whatever project you have
+currently... throw away the `index.html` file, modify `Gruntfile.coffee`
+to output the files wherever you need.
+
 Instructions
 ============
 
