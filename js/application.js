@@ -27174,9 +27174,25 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   
 
 
-  data.buffer.push("i'm ryan haywood\n");
+  data.buffer.push("the app\n");
   
 });
-var App;
+window.require.define({"app": function(exports, require, module) {
+var App, haha;
+
+haha = require('./new');
 
 App = Ember.Application.create();
+}});
+
+
+window.require.define({"new": function(exports, require, module) {
+var haha;
+
+haha = function() {
+  return 'haha';
+};
+
+module.exports = haha;
+}});
+

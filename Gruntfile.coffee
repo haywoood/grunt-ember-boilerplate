@@ -1,11 +1,23 @@
 module.exports = (grunt) ->
   grunt.initConfig
+    clean:
+      all: ['.tmp', 'css', 'js']
+
     coffee:
-      all:
-        options:
-          bare: true
-        src: ['libs/**/*.coffee']
-        dest: 'js/application.js'
+      options:
+        bare: true
+      glob_to_multiple:
+        expand: true
+        cwd: 'libs/js'
+        src: ['**/*.coffee']
+        dest: '.tmp/js'
+        ext: '.js'
+
+    commonjs:
+      modules:
+        cwd: '.tmp/js/'
+        src: '**/*.js'
+        dest: '.tmp/js/'
 
     stylus:
       compile:
@@ -32,11 +44,12 @@ module.exports = (grunt) ->
         dest: 'css/application.css'
       scripts:
         src: [
+          'vendor/commonjs.js'
           'vendor/jquery.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.js'
           'js/templates.js'
-          'js/application.js'
+          '.tmp/**/*.js'
         ]
         dest: 'js/application.js'
 
@@ -52,5 +65,14 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-ember-handlebars'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-commonjs'
+  grunt.loadNpmTasks 'grunt-contrib-clean'
 
-  grunt.registerTask 'default', ['coffee', 'stylus', 'ember_handlebars', 'concat']
+  grunt.registerTask 'default', [
+    'clean'
+    'coffee'
+    'commonjs'
+    'stylus'
+    'ember_handlebars'
+    'concat'
+  ]

@@ -10,11 +10,13 @@
   "author": "",
   "license": "BSD",
   "devDependencies": {
-    "grunt": "~0.4.0",
-    "grunt-contrib-coffee": "~0.4.1",
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.6.0",
     "grunt-ember-handlebars": "~0.4.0",
     "grunt-contrib-stylus": "~0.4.1",
     "grunt-contrib-concat": "~0.1.3",
-    "grunt-contrib-watch": "~0.2.0"
+    "grunt-contrib-watch": "~0.2.0",
+    "grunt-commonjs": "~0.2.0rc7",
+    "grunt-contrib-clean": "~0.4.0"
   }
 }

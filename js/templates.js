@@ -7,6 +7,6 @@ helpers = helpers || Ember.Handlebars.helpers; data = data || {};
   
 
 
-  data.buffer.push("i'm ryan haywood\n");
+  data.buffer.push("the app\n");
   
 });
