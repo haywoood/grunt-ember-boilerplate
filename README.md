@@ -23,7 +23,7 @@ Instructions
 
 2. Clone the repo with your own directory name and remove prior `.git`
 folder  
-`git clone https://github.com/lsdafjklsd/grunt-ember-boilerplate.git \
+`git clone https://github.com/lsdafjklsd/grunt-ember-boilerplate.git \  
 your-application-name && rm -rf your-application-name/.git`
 
 3. Install project dependencies  
