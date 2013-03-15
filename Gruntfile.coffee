@@ -41,7 +41,7 @@ module.exports = (grunt) ->
           'css/application.css'
         ]
         dest: 'css/application.css'
-      scripts:
+      precompile:
         src: [
           'vendor/jquery.js'
           'vendor/common.js'
@@ -51,6 +51,21 @@ module.exports = (grunt) ->
           '.tmp/**/*.js'
         ]
         dest: 'js/application.js'
+      scripts:
+        src: [
+          'vendor/jquery.js'
+          'vendor/common.js'
+          'vendor/handlebars.runtime.js'
+          'vendor/ember.min.js'
+          '.tmp/js/templates.js'
+          '.tmp/**/*.js'
+        ]
+        dest: 'js/application.js'
+
+    uglify:
+      precompile:
+        files:
+          'js/application.js': ['js/application.js']
 
     watch:
       main:
@@ -60,6 +75,7 @@ module.exports = (grunt) ->
         tasks: ['default']
 
   grunt.loadNpmTasks 'grunt-contrib-coffee'
+  grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-stylus'
   grunt.loadNpmTasks 'grunt-ember-handlebars'
   grunt.loadNpmTasks 'grunt-contrib-concat'
@@ -74,4 +90,15 @@ module.exports = (grunt) ->
     'stylus'
     'ember_handlebars'
     'concat'
+  ]
+
+  grunt.registerTask 'precompile', [
+    'clean'
+    'coffee'
+    'commonjs'
+    'stylus'
+    'ember_handlebars'
+    'concat:precompile'
+    'concat:styles'
+    'uglify'
   ]
