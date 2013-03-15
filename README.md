@@ -23,11 +23,12 @@ Instructions
 
 2. Clone the repo with your own directory name and remove prior `.git`
 folder  
-`git clone https://github.com/lsdafjklsd/grunt-ember-boilerplate.git \  
-your-application-name && rm -rf your-application-name/.git`
+`git clone https://github.com/lsdafjklsd/grunt-ember-boilerplate.git
+your-application-name`  
+`cd your-application-name && rm -rf .git`
 
 3. Install project dependencies  
-`cd your-application-name && npm install`
+`npm install`
 
 Now to develop your application, run the `grunt watch` command. This
 will run the default action (which does everything) anytime a file in
