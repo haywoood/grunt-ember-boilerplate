@@ -46,7 +46,7 @@ module.exports = (grunt) ->
           'vendor/jquery.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
-          'vendor/ember.js'
+          'vendor/ember.min.js'
           '.tmp/js/templates.js'
           '.tmp/**/*.js'
         ]
@@ -56,7 +56,7 @@ module.exports = (grunt) ->
           'vendor/jquery.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
-          'vendor/ember.min.js'
+          'vendor/ember.js'
           '.tmp/js/templates.js'
           '.tmp/**/*.js'
         ]
@@ -89,7 +89,8 @@ module.exports = (grunt) ->
     'commonjs'
     'stylus'
     'ember_handlebars'
-    'concat'
+    'concat:scripts'
+    'concat:styles'
   ]
 
   grunt.registerTask 'precompile', [
