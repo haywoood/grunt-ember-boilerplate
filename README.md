@@ -56,7 +56,7 @@ When you want to deploy, run the `grunt precompile` command to generate
 a production ready version of the `js/application.js` file.
 
 Develop in the `libs` directory, your generated files end up in the the
-`js` and `css` folders in the project root.
+`js` and `css` folders in the public directory.
 
 For an idea on how to incorporate Ember Data, check out my on-going
 Forum project [here](https://github.com/lsdafjklsd/vmware-frontend/tree/master/forum/js)

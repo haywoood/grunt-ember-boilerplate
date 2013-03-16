@@ -22,7 +22,7 @@ module.exports = (grunt) ->
     stylus:
       compile:
         files:
-          'css/application.css': ['libs/**/*.styl']
+          'public/css/application.css': ['libs/**/*.styl']
 
     ember_handlebars:
       options:
@@ -38,12 +38,13 @@ module.exports = (grunt) ->
       styles:
         src: [
           'vendor/normalize.css'
-          'css/application.css'
+          'public/css/application.css'
         ]
-        dest: 'css/application.css'
+        dest: 'public/css/application.css'
       precompile:
         src: [
           'vendor/jquery.js'
+          'vendor/rangy.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.min.js'
@@ -51,10 +52,11 @@ module.exports = (grunt) ->
           '.tmp/js/templates.js'
           '.tmp/**/*.js'
         ]
-        dest: 'js/application.js'
+        dest: 'public/js/application.js'
       scripts:
         src: [
           'vendor/jquery.js'
+          'vendor/rangy.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.js'
@@ -62,12 +64,12 @@ module.exports = (grunt) ->
           '.tmp/js/templates.js'
           '.tmp/**/*.js'
         ]
-        dest: 'js/application.js'
+        dest: 'public/js/application.js'
 
     uglify:
       precompile:
         files:
-          'js/application.js': ['js/application.js']
+          'public/js/application.js': ['public/js/application.js']
 
     watch:
       main:
