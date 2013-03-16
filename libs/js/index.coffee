@@ -3,6 +3,8 @@
 
 window.App = require './app'
 
+require './store'
+
 ##
 # Sample setup
 ##
