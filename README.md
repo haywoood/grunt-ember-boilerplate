@@ -73,4 +73,3 @@ Todos
 1. Add testing with `grunt-contrib-jasmine`
 2. Make this an actually grunt project template, versus cloning this
    repo and deleting the existing `.git` directory.
-3. Add ember data
