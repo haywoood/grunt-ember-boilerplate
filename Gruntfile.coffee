@@ -1,7 +1,7 @@
 module.exports = (grunt) ->
   grunt.initConfig
     clean:
-      all: ['.tmp', 'css', 'js']
+      all: ['.tmp', 'public/css', 'public/js']
 
     coffee:
       options:
