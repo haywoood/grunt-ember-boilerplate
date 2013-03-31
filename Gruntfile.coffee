@@ -44,7 +44,6 @@ module.exports = (grunt) ->
       precompile:
         src: [
           'vendor/jquery.js'
-          'vendor/rangy.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.min.js'
@@ -56,7 +55,6 @@ module.exports = (grunt) ->
       scripts:
         src: [
           'vendor/jquery.js'
-          'vendor/rangy.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.js'
