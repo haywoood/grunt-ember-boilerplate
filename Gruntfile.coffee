@@ -1,3 +1,10 @@
+'use strict'
+path = require 'path'
+lrSnippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet
+
+folderMount = (connect, point) ->
+  connect.static(path.resolve(point))
+
 module.exports = (grunt) ->
   grunt.initConfig
     clean:
@@ -69,21 +76,28 @@ module.exports = (grunt) ->
         files:
           'public/js/application.js': ['public/js/application.js']
 
-    watch:
-      main:
-        files: [
-          'libs/**/*'
-        ]
-        tasks: ['default']
+    regarde:
+      coffee:
+        files: 'libs/js/**/*.coffee'
+        tasks: ['default', 'livereload', 'regarde']
+      handlebars:
+        files: 'libs/**/*.handlebars'
+        tasks: ['default', 'livereload', 'regarde']
+      stylus:
+        files: 'libs/**/*.styl'
+        tasks: ['default', 'livereload', 'regarde']
 
+
+  grunt.loadNpmTasks 'grunt-contrib-livereload'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-stylus'
   grunt.loadNpmTasks 'grunt-ember-handlebars'
   grunt.loadNpmTasks 'grunt-contrib-concat'
-  grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-commonjs'
   grunt.loadNpmTasks 'grunt-contrib-clean'
+  grunt.loadNpmTasks 'grunt-regarde'
+
 
   grunt.registerTask 'default', [
     'clean'
@@ -93,6 +107,11 @@ module.exports = (grunt) ->
     'ember_handlebars'
     'concat:scripts'
     'concat:styles'
+  ]
+
+  grunt.registerTask 'watch', [
+    'livereload-start'
+    'regarde'
   ]
 
   grunt.registerTask 'precompile', [

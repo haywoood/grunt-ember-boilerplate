@@ -14,6 +14,8 @@
     "grunt-contrib-watch": "~0.2.0",
     "grunt-commonjs": "~0.2.0rc7",
     "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-uglify": "~0.2.0"
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-livereload": "~0.1.2",
+    "grunt-regarde": "~0.1.1"
   }
 }
