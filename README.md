@@ -14,6 +14,7 @@ You get:
 - Coffeescript
 - Stylus for CSS
 - A precompilation directive for production deploy
+- Live reload for even better local development
 
 Why?
 ====
@@ -55,6 +56,8 @@ will run the default action (which does everything) anytime a file in
 When you want to deploy, run the `grunt precompile` command to generate
 a production ready version of the `js/application.js` file.
 
+If you're using the `public/index.html` in production, be sure to delete the live-reload script tag at the bottom of the page.
+
 Develop in the `libs` directory, your generated files end up in the the
 `js` and `css` folders in the public directory.
 
@@ -70,6 +73,6 @@ on that.
 Todos
 =====
 
-1. Add testing with `grunt-contrib-jasmine`
+1. Add testing with `grunt-contrib-jasmine`, waiting on community agreed upon methods for testing
 2. Make this an actually grunt project template, versus cloning this
    repo and deleting the existing `.git` directory.
