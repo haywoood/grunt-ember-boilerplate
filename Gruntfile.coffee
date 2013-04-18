@@ -31,13 +31,11 @@ module.exports = (grunt) ->
         files:
           'public/css/application.css': ['libs/**/*.styl']
 
-    ember_handlebars:
-      options:
-        processName: (filename) ->
-          pieces = filename.split '/'
-          template = pieces.slice 3
-          template.join('/').slice 0, -11
+    ember_templates:
       compile:
+        options:
+          templateName: (sourceFile) ->
+            sourceFile.replace(/libs\/js\/templates\//, '')
         files:
           '.tmp/js/templates.js': ['libs/**/*.handlebars']
 
@@ -92,7 +90,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-stylus'
-  grunt.loadNpmTasks 'grunt-ember-handlebars'
+  grunt.loadNpmTasks 'grunt-ember-templates'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-commonjs'
   grunt.loadNpmTasks 'grunt-contrib-clean'
@@ -104,7 +102,7 @@ module.exports = (grunt) ->
     'coffee'
     'commonjs'
     'stylus'
-    'ember_handlebars'
+    'ember_templates'
     'concat:scripts'
     'concat:styles'
   ]
@@ -119,7 +117,7 @@ module.exports = (grunt) ->
     'coffee'
     'commonjs'
     'stylus'
-    'ember_handlebars'
+    'ember_templates'
     'concat:precompile'
     'concat:styles'
     'uglify'
