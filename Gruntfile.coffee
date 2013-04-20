@@ -31,6 +31,14 @@ module.exports = (grunt) ->
         files:
           'public/css/application.css': ['libs/**/*.styl']
 
+    cssmin: {
+      compress: {
+        files: {
+          'public/css/application.css': ['public/css/application.css']
+        }
+      }
+    }
+
     ember_templates:
       compile:
         options:
@@ -90,6 +98,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-contrib-stylus'
+  grunt.loadNpmTasks 'grunt-contrib-cssmin'
   grunt.loadNpmTasks 'grunt-ember-templates'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-commonjs'
@@ -121,4 +130,5 @@ module.exports = (grunt) ->
     'concat:precompile'
     'concat:styles'
     'uglify'
+    'cssmin'
   ]
