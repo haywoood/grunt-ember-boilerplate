@@ -60,7 +60,7 @@ module.exports = (grunt) ->
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.min.js'
-          'vendor/ember-data.js'
+          'vendor/ember-data.min.js'
           '.tmp/js/templates.js'
           '.tmp/**/*.js'
         ]

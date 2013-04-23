@@ -13,6 +13,7 @@ You get:
 - Commonjs modules
 - Coffeescript
 - Stylus for CSS
+- Normalize.css for the best browser reset
 - A precompilation directive for production deploy
 - Live reload for even better local development
 
@@ -74,5 +75,5 @@ Todos
 =====
 
 1. Add testing with `grunt-contrib-jasmine`, waiting on community agreed upon methods for testing
-2. Make this an actually grunt project template, versus cloning this
+2. Make this an actual grunt project template, versus cloning this
    repo and deleting the existing `.git` directory.

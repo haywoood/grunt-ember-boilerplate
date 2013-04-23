@@ -1,23 +1,10 @@
-App = require './app'
+serializer = DS.JSONSerializer.create()
 
-##
-# Sample, works with rails JSON Serializers
-##
-#
-# serializer = DS.JSONSerializer.create()
-#
-# serializer.configure 'App.User',
-#   sideloadAs: 'users'
-# 
-# 
-# RestAdapter = DS.RESTAdapter.extend
-#   serializer: serializer
-# 
-# RestAdapter.configure('plurals',
-#   reply: 'replies'
-# 
-# 
-# App.store = DS.Store.extend(
-#   adapter: RestAdapter,
-#   revision: 12
-# ).create()
+RestAdapter = DS.RESTAdapter.extend
+  serializer: serializer
+
+Store = DS.Store.extend
+  adapter: RestAdapter,
+  revision: 12
+
+module.exports = Store
