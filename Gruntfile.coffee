@@ -7,6 +7,9 @@ folderMount = (connect, point) ->
 
 module.exports = (grunt) ->
   grunt.initConfig
+    qunit:
+      all: ['tests/**/*.html']
+
     clean:
       all: ['.tmp', 'public/css', 'public/js']
 
@@ -104,6 +107,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-commonjs'
   grunt.loadNpmTasks 'grunt-contrib-clean'
   grunt.loadNpmTasks 'grunt-regarde'
+  grunt.loadNpmTasks 'grunt-contrib-qunit'
 
 
   grunt.registerTask 'default', [
@@ -114,6 +118,7 @@ module.exports = (grunt) ->
     'ember_templates'
     'concat:scripts'
     'concat:styles'
+    'qunit'
   ]
 
   grunt.registerTask 'watch', [
