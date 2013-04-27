@@ -90,6 +90,5 @@ subject.
 Todos
 =====
 
-1. Add testing with `grunt-contrib-jasmine`, waiting on community agreed upon methods for testing
-2. Make this an actual grunt project template, versus cloning this
+1. Make this an actual grunt project template, versus cloning this
    repo and deleting the existing `.git` directory.
