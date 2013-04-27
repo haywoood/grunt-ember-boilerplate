@@ -57,6 +57,11 @@ module.exports = (grunt) ->
           'public/css/application.css'
         ]
         dest: 'public/css/application.css'
+      tests:
+        src: [
+          'tests/integration/**/*.js'
+        ]
+        dest: 'tests/test_bundle.js'
       precompile:
         src: [
           'vendor/jquery.js'
@@ -95,6 +100,9 @@ module.exports = (grunt) ->
       stylus:
         files: 'libs/**/*.styl'
         tasks: ['default', 'livereload', 'regarde']
+      tests:
+        files: 'tests/integration/**/*.js'
+        tasks: ['test', 'livereload', 'regarde']
 
 
   grunt.loadNpmTasks 'grunt-contrib-livereload'
@@ -118,7 +126,6 @@ module.exports = (grunt) ->
     'ember_templates'
     'concat:scripts'
     'concat:styles'
-    'qunit'
   ]
 
   grunt.registerTask 'watch', [
@@ -136,4 +143,10 @@ module.exports = (grunt) ->
     'concat:styles'
     'uglify'
     'cssmin'
+  ]
+
+  grunt.registerTask 'test', [
+    'default'
+    'concat:tests'
+    'qunit'
   ]
