@@ -9,6 +9,7 @@ gives you everything you need to start developing
 
 You get:  
 - Handlebars precompilation
+- Ember Idiomatic integration tests with Qunit
 - Base folder setup
 - Commonjs modules
 - Coffeescript
@@ -52,7 +53,18 @@ your-application-name`
 
 Now to develop your application, run the `grunt watch` command. This
 will run the default action (which does everything) anytime a file in
-`libs/` changes. 
+`libs/` changes. It will also watch Javascript files in the integration
+folder and run the tests when a file is changed.
+
+Testing is really easy in Ember, if you have done integration tests in
+other environments this will be a breath of fresh air. If you are new to
+testing, integration tests are a great way to ease into because
+it allows you to automate the clicks and steps you would normally manually go through.
+Sample tests are provided in this project which give you basic `navigate
+here, look for this content`. There are more helpers available to you
+and I suggest you watch this [lightning
+talk](http://www.youtube.com/watch?v=nO1hxT9GBTs&feature=youtu.be) by Erik Bryn on the
+subject.  
 
 When you want to deploy, run the `grunt precompile` command to generate
 a production ready version of the `js/application.js` file.
