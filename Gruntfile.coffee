@@ -7,6 +7,9 @@ folderMount = (connect, point) ->
 
 module.exports = (grunt) ->
   grunt.initConfig
+    livereload:
+      port: 35729
+      
     qunit:
       all: ['tests/**/*.html']
 
