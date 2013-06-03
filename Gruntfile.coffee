@@ -14,23 +14,23 @@ module.exports = (grunt) ->
       all: ['tests/**/*.html']
 
     clean:
-      all: ['.tmp', 'public/css', 'public/js']
+      all: ['.tmp/**/*.*', 'public/css', 'public/js']
 
     coffee:
       options:
         bare: true
       glob_to_multiple:
         expand: true
-        cwd: 'libs/js'
-        src: ['**/*.coffee']
+        cwd: ''
+        src: ['libs/**/*.coffee', 'tests/integration/**/*.coffee']
         dest: '.tmp/js'
         ext: '.js'
 
     commonjs:
       modules:
-        cwd: '.tmp/js/'
+        cwd: '.tmp/js/libs/js/'
         src: '**/*.js'
-        dest: '.tmp/js/'
+        dest: '.tmp/js/libs/js/'
 
     stylus:
       compile:
@@ -45,13 +45,13 @@ module.exports = (grunt) ->
       }
     }
 
-    ember_templates:
+    emberTemplates:
       compile:
         options:
           templateName: (sourceFile) ->
             sourceFile.replace(/libs\/js\/templates\//, '')
         files:
-          '.tmp/js/templates.js': ['libs/**/*.handlebars']
+          '.tmp/js/libs/templates.js': ['libs/**/*.handlebars']
 
     concat:
       styles:
@@ -63,6 +63,7 @@ module.exports = (grunt) ->
       tests:
         src: [
           'tests/integration/**/*.js'
+          '.tmp/js/tests/**/*.js'
         ]
         dest: 'tests/test_bundle.js'
       precompile:
@@ -72,8 +73,8 @@ module.exports = (grunt) ->
           'vendor/handlebars.runtime.js'
           'vendor/ember.min.js'
           'vendor/ember-data.min.js'
-          '.tmp/js/templates.js'
-          '.tmp/**/*.js'
+          '.tmp/js/libs/templates.js'
+          '.tmp/js/libs/js/**/*.js'
         ]
         dest: 'public/js/application.js'
       scripts:
@@ -83,8 +84,8 @@ module.exports = (grunt) ->
           'vendor/handlebars.runtime.js'
           'vendor/ember.js'
           'vendor/ember-data.js'
-          '.tmp/js/templates.js'
-          '.tmp/**/*.js'
+          '.tmp/js/libs/templates.js'
+          '.tmp/js/libs/js/**/*.js'
         ]
         dest: 'public/js/application.js'
 
@@ -104,7 +105,7 @@ module.exports = (grunt) ->
         files: 'libs/**/*.styl'
         tasks: ['default', 'livereload', 'regarde']
       tests:
-        files: 'tests/integration/**/*.js'
+        files: ['tests/integration/**/*.js', 'tests/integration/**/*.coffee']
         tasks: ['test', 'livereload', 'regarde']
 
 
@@ -126,7 +127,7 @@ module.exports = (grunt) ->
     'coffee'
     'commonjs'
     'stylus'
-    'ember_templates'
+    'emberTemplates'
     'concat:scripts'
     'concat:styles'
   ]
@@ -141,7 +142,7 @@ module.exports = (grunt) ->
     'coffee'
     'commonjs'
     'stylus'
-    'ember_templates'
+    'emberTemplates'
     'concat:precompile'
     'concat:styles'
     'uglify'
