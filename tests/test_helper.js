@@ -9,3 +9,14 @@ App.injectTestHelpers();
 function exists(selector) {
   return !!find(selector).length;
 }
+
+function emberTestModule(name, testEnvironment ) {
+  return module(name, $.extend(testEnvironment || {}, {
+	  setup: function() {
+	  	return Ember.run(App, App.advanceReadiness);
+	  },
+	  teardown: function() {
+	    return App.reset();
+	  }
+  }));
+}
