@@ -1,5 +1,4 @@
-// Version: v1.0.0
-// Last commit: e2ea0cf (2013-08-31 23:47:39 -0700)
+// Last commit: 0d82d1b (2013-09-11 16:25:08 -0400)
 
 
 (function() {
@@ -170,8 +169,7 @@ if (!Ember.testing) {
 
 })();
 
-// Version: v1.0.0
-// Last commit: e2ea0cf (2013-08-31 23:47:39 -0700)
+// Last commit: 0d82d1b (2013-09-11 16:25:08 -0400)
 
 
 (function() {

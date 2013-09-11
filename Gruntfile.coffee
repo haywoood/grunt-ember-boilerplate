@@ -7,6 +7,31 @@ folderMount = (connect, point) ->
 
 module.exports = (grunt) ->
   grunt.initConfig
+
+    copy: 
+      main: 
+        files: [
+          # jquery
+          {expand: true, cwd: 'bower_components/jquery/', src: ['jquery.js'], dest: 'vendor/', filter: 'isFile'}, # includes files in path
+          # bootstrap
+          {expand: true, cwd: 'bower_components/bootstrap/dist/css/', src: ['**'], dest: 'vendor/bootstrap/css/', filter: 'isFile'}, # includes files in path
+          {expand: true, cwd: 'bower_components/bootstrap/dist/fonts/', src: ['**'], dest: 'public/fonts/', filter: 'isFile'}, # includes files in path
+          {expand: true, cwd: 'bower_components/bootstrap/dist/js/', src: ['**'], dest: 'vendor/bootstrap/js/', filter: 'isFile'}, # includes files in path
+          # handlebars
+          {expand: true, cwd: 'bower_components/handlebars/', src: ['handlebars*.js'], dest: 'vendor/', filter: 'isFile'}, # includes files in path
+          # ember
+          {expand: true, cwd: 'bower_components/ember.js/dist/', src: ['ember.js'], dest: 'vendor/', filter: 'isFile'}, # includes files in path
+          # ember-data
+          {expand: true, cwd: 'bower_components/ember-data/dist/', src: ['ember-data.js'], dest: 'vendor/', filter: 'isFile'}, # includes files in path
+          # ember-bootstrap
+          {expand: true, cwd: 'bower_components/ember-bootstrap/dist/', src: ['ember-bootstrap.js'], dest: 'vendor/', filter: 'isFile'}, # includes files in path
+
+
+          # {expand: true, src: ['path/**'], dest: 'dest/'}, # includes files in path and its subdirs
+          # {expand: true, cwd: 'path/', src: ['**'], dest: 'dest/'}, # makes all src relative to cwd
+          # {expand: true, flatten: true, src: ['path/**'], dest: 'dest/', filter: 'isFile'} # flattens results to a single level    ]
+        ]
+    
     livereload:
       port: 35729
       
@@ -57,6 +82,8 @@ module.exports = (grunt) ->
       styles:
         src: [
           'vendor/normalize.css'
+          'vendor/bootstrap/css/bootstrap.css'
+          'vendor/bootstrap/css/bootstrap-theme.css'
           'public/css/application.css'
         ]
         dest: 'public/css/application.css'
@@ -69,6 +96,7 @@ module.exports = (grunt) ->
       precompile:
         src: [
           'vendor/jquery.js'
+          'vendor/bootstrap/js/bootstrap.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.min.js'
@@ -80,6 +108,7 @@ module.exports = (grunt) ->
       scripts:
         src: [
           'vendor/jquery.js'
+          'vendor/bootstrap/js/bootstrap.js'
           'vendor/common.js'
           'vendor/handlebars.runtime.js'
           'vendor/ember.js'
@@ -109,6 +138,7 @@ module.exports = (grunt) ->
         tasks: ['test', 'livereload', 'regarde']
 
 
+  grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-livereload'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
@@ -123,6 +153,7 @@ module.exports = (grunt) ->
 
 
   grunt.registerTask 'default', [
+    'copy'
     'clean'
     'coffee'
     'commonjs'

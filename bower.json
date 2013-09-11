@@ -1,0 +1,25 @@
+{
+  "name": "banquethallwizard",
+  "version": "0.0.1",
+  "homepage": "https://github.com/orlaqp/grunt-ember-boilerplate",
+  "authors": [
+    "Orlando Quero <orlaqp@gmail.com>"
+  ],
+  "description": "no description",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.0",
+    "ember-bootstrap": "~0.0.2",
+    "ember-data": "~1.0.0-beta.2",
+    "ember.js": "~1.0.0",
+    "handlebars": "~1.0.0"
+  }
+}
